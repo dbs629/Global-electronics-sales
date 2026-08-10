@@ -55,8 +55,7 @@ order cases; currency codes match 1:1 between `Sales.csv` and
 
 ## SQL analysis
 
-Once the cleaned CSVs are loaded into a database (tables prefixed `GBE_`,
-matching the cleaned file names), these queries answer some common
+Once the cleaned CSVs are loaded into a database (tables matching the cleaned file names), these queries answer some common
 retail-analytics questions.
 
 ### Sales performance, seasonal trend & channel analysis
@@ -70,8 +69,8 @@ SELECT
     SUM(s.Quantity * p.Unit_Price_USD) AS Revenue,
     COUNT(DISTINCT Order_Number) AS Orders,
     SUM(s.Quantity * (p.Unit_Price_USD - p.Unit_Cost_USD)) AS Profit
-FROM GBE_Sales s
-JOIN GBE_Products p
+FROM Sales s
+JOIN Products p
     ON s.ProductKey = p.ProductKey
 GROUP BY YEAR(Order_Date), p.Category
 ORDER BY Year ASC;
@@ -90,8 +89,8 @@ SELECT
     SUM(s.Quantity * p.Unit_Price_USD) AS Revenue,
     SUM(s.Quantity * (p.Unit_Price_USD - p.Unit_Cost_USD)) AS Profit,
     COUNT(DISTINCT Order_Number) AS Orders
-FROM GBE_Sales s
-JOIN GBE_Products p
+FROM Sales s
+JOIN Products p
     ON s.ProductKey = p.ProductKey
 GROUP BY YEAR(Order_Date), MONTH(Order_Date)
 ORDER BY Year, Month ASC;
@@ -108,7 +107,7 @@ SELECT
     Channel,
     SUM(c.Quantity * p.Unit_Price_USD) / COUNT(DISTINCT Order_Number) AS AOV
 FROM Channel c
-JOIN GBE_Products p
+JOIN Products p
     ON c.ProductKey = p.ProductKey
 GROUP BY YEAR(Order_Date), Channel
 ORDER BY Year ASC;
@@ -134,15 +133,15 @@ WITH gen AS (
             WHEN YEAR([Birthday]) >= 2013 THEN 'Gen Alpha'
             ELSE 'Unknown'
         END AS Generation
-    FROM GBE_Customers
+    FROM Customers
 )
 SELECT
     Generation,
     SUM(s.Quantity * p.Unit_Price_USD) AS Total_spending,
     COUNT(DISTINCT Order_Number) AS Orders,
     SUM(s.Quantity * p.Unit_Price_USD) / COUNT(Order_Number) AS AOV
-FROM GBE_Sales s
-JOIN GBE_Products p
+FROM Sales s
+JOIN Products p
     ON s.ProductKey = p.ProductKey
 JOIN gen g
     ON s.CustomerKey = g.CustomerKey
