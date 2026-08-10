@@ -82,6 +82,9 @@ ORDER BY Year ASC;
 
 ![Revenue YoY](RevenueYoY.png)
 
+Key findings:
+Revenue shows a repeating Q4-peak, Q1-trough pattern — it builds toward a high around each year-end (likely holiday shopping) before dropping sharply in the following January/February, and this cycle repeats across 2016–2020. That said, some of those early-year drops fall to literal $0, which looks more like a data gap than a true seasonal low, so the peak-to-trough shape is probably real but the depth is exaggerated in places.
+
 **Monthly trend (revenue, profit, orders)**
 
 ```sql
