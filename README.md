@@ -79,7 +79,8 @@ ORDER BY Year ASC;
 - **Revenue** = quantity × unit price
 - **Profit** = quantity × (unit price − unit cost)
 - **Orders** = distinct order count (not line items) per year/category
-![Dashboard](images/Revenue YoY.png)
+
+![Dashboard](https://raw.githubusercontent.com/dbs629/Global-electronics-sales/main/path/to/Revenue YoY.png)
 
 **Monthly trend (revenue, profit, orders)**
 
