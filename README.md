@@ -1,4 +1,5 @@
-# Global Electronics Retailer — Data Cleaning
+# Global Electronics Retailer 
+— Data Cleaning
 
 Cleans the 5-table Global Electronics Retailer dataset (`Customers`,
 `Exchange_Rates`, `Products`, `Sales`, `Stores`) and produces a data quality
