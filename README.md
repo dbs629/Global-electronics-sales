@@ -80,7 +80,7 @@ ORDER BY Year ASC;
 - **Profit** = quantity × (unit price − unit cost)
 - **Orders** = distinct order count (not line items) per year/category
 
-![Dashboard](Revenue YoY.png)
+![Total Revenue and Order Volume by Year and Month](revenue-yoy.png)
 
 **Monthly trend (revenue, profit, orders)**
 
