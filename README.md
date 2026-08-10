@@ -60,32 +60,7 @@ retail-analytics questions.
 
 ### Sales performance, seasonal trend & channel analysis
 
-**Yearly revenue & profit by category**
-
-```sql
-SELECT
-    YEAR(Order_Date) AS Year,
-    p.Category,
-    SUM(s.Quantity * p.Unit_Price_USD) AS Revenue,
-    COUNT(DISTINCT Order_Number) AS Orders,
-    SUM(s.Quantity * (p.Unit_Price_USD - p.Unit_Cost_USD)) AS Profit
-FROM Sales s
-JOIN Products p
-    ON s.ProductKey = p.ProductKey
-GROUP BY YEAR(Order_Date), p.Category
-ORDER BY Year ASC;
-```
-
-- **Revenue** = quantity × unit price
-- **Profit** = quantity × (unit price − unit cost)
-- **Orders** = distinct order count (not line items) per year/category
-
-![Revenue YoY](RevenueYoY.png)
-
-Key findings:
-Revenue shows a repeating Q4-peak, Q1-trough pattern — it builds toward a high around each year-end (likely holiday shopping) before dropping sharply in the following January/February, and this cycle repeats across 2016–2020. That said, some of those early-year drops fall to literal $0, which looks more like a data gap than a true seasonal low, so the peak-to-trough shape is probably real but the depth is exaggerated in places.
-
-**Monthly trend (revenue, profit, orders)**
+**Seasonal trend (revenue, profit, orders)**
 
 ```sql
 SELECT
@@ -103,6 +78,17 @@ ORDER BY Year, Month ASC;
 
 Same metrics as above, broken down to the month level to surface
 seasonality (e.g. holiday-quarter spikes).
+
+- **Revenue** = quantity × unit price
+- **Profit** = quantity × (unit price − unit cost)
+- **Orders** = distinct order count (not line items) per year/category
+
+![Revenue YoY](RevenueYoY.png)
+
+Key findings:
+Revenue shows a repeating Q4-peak, Q1-trough pattern — it builds toward a high around each year-end (likely holiday shopping) before dropping sharply in the following January/February, and this cycle repeats across 2016–2020. That said, some of those early-year drops fall to literal $0, which looks more like a data gap than a true seasonal low, so the peak-to-trough shape is probably real but the depth is exaggerated in places.
+
+
 
 **Average order value by channel**
 
