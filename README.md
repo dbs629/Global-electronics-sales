@@ -53,6 +53,112 @@ its parent table with zero orphans; all dates parse with no delivery-before-
 order cases; currency codes match 1:1 between `Sales.csv` and
 `Exchange_Rates.csv`.
 
+## SQL analysis
+
+Once the cleaned CSVs are loaded into a database (tables prefixed `GBE_`,
+matching the cleaned file names), these queries answer some common
+retail-analytics questions.
+
+### Sales performance, seasonal trend & channel analysis
+
+**Yearly revenue & profit by category**
+
+```sql
+SELECT
+    YEAR(Order_Date) AS Year,
+    p.Category,
+    SUM(s.Quantity * p.Unit_Price_USD) AS Revenue,
+    COUNT(DISTINCT Order_Number) AS Orders,
+    SUM(s.Quantity * (p.Unit_Price_USD - p.Unit_Cost_USD)) AS Profit
+FROM GBE_Sales s
+JOIN GBE_Products p
+    ON s.ProductKey = p.ProductKey
+GROUP BY YEAR(Order_Date), p.Category
+ORDER BY Year ASC;
+```
+
+- **Revenue** = quantity × unit price
+- **Profit** = quantity × (unit price − unit cost)
+- **Orders** = distinct order count (not line items) per year/category
+
+**Monthly trend (revenue, profit, orders)**
+
+```sql
+SELECT
+    YEAR(Order_Date) AS Year,
+    MONTH(Order_Date) AS Month,
+    SUM(s.Quantity * p.Unit_Price_USD) AS Revenue,
+    SUM(s.Quantity * (p.Unit_Price_USD - p.Unit_Cost_USD)) AS Profit,
+    COUNT(DISTINCT Order_Number) AS Orders
+FROM GBE_Sales s
+JOIN GBE_Products p
+    ON s.ProductKey = p.ProductKey
+GROUP BY YEAR(Order_Date), MONTH(Order_Date)
+ORDER BY Year, Month ASC;
+```
+
+Same metrics as above, broken down to the month level to surface
+seasonality (e.g. holiday-quarter spikes).
+
+**Average order value by channel**
+
+```sql
+SELECT
+    YEAR(Order_Date) AS Year,
+    Channel,
+    SUM(c.Quantity * p.Unit_Price_USD) / COUNT(DISTINCT Order_Number) AS AOV
+FROM Channel c
+JOIN GBE_Products p
+    ON c.ProductKey = p.ProductKey
+GROUP BY YEAR(Order_Date), Channel
+ORDER BY Year ASC;
+```
+
+> Assumes a `Channel` table/view (e.g. Online vs. In-Store) that isn't part
+> of the base 5 CSVs — worth a line here on how you built it (e.g. derived
+> from `Stores.StoreKey = 0` = Online) if you're sharing this repo.
+
+### Customer analysis & segmentation
+
+**Spend by generation**
+
+```sql
+WITH gen AS (
+    SELECT
+        CustomerKey,
+        CASE
+            WHEN YEAR([Birthday]) BETWEEN 1997 AND 2012 THEN 'Gen Z'
+            WHEN YEAR([Birthday]) BETWEEN 1981 AND 1996 THEN 'Millennials'
+            WHEN YEAR([Birthday]) BETWEEN 1965 AND 1980 THEN 'Gen X'
+            WHEN YEAR([Birthday]) BETWEEN 1946 AND 1964 THEN 'Boomers'
+            WHEN YEAR([Birthday]) >= 2013 THEN 'Gen Alpha'
+            ELSE 'Unknown'
+        END AS Generation
+    FROM GBE_Customers
+)
+SELECT
+    Generation,
+    SUM(s.Quantity * p.Unit_Price_USD) AS Total_spending,
+    COUNT(DISTINCT Order_Number) AS Orders,
+    SUM(s.Quantity * p.Unit_Price_USD) / COUNT(Order_Number) AS AOV
+FROM GBE_Sales s
+JOIN GBE_Products p
+    ON s.ProductKey = p.ProductKey
+JOIN gen g
+    ON s.CustomerKey = g.CustomerKey
+GROUP BY Generation
+ORDER BY Total_spending DESC;
+```
+
+Buckets customers into generational cohorts by birth year and ranks cohorts
+by total spend. Customers born before 1946 fall into `Unknown` under this
+cutoff scheme.
+
+> Heads up: this `AOV` divides by `COUNT(Order_Number)` (every line item),
+> while `Orders` right above it uses `COUNT(DISTINCT Order_Number)`. If you
+> want AOV to mean "average per order" — consistent with the channel query
+> above — switch the AOV denominator to `COUNT(DISTINCT Order_Number)` too.
+
 ## License
 
 MIT (or your choice — update this section).
