@@ -1,6 +1,6 @@
 # Global Electronics Retailer 
 
-##Data overview
+## Data Overview
 
 The Objective: Analyze historical transaction data to identify trends, optimize channel performance, and pinpoint customer retention risks.
 
