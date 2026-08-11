@@ -188,15 +188,10 @@ JOIN day_diff dd
 GROUP BY g.Generation
 ORDER BY Total_spending DESC;
 ```
-Generation	Total_spending	Orders	Days since last purchase
-Boomers	15453509.46	7433	617
-Gen X	13347735.17	6333	612
-Millennials	13309646.2	6241	608
-Unknown	9135944.54	4182	625
-Gen Z	4508644.22	2137	600
+
 <img width="611" height="145" alt="image" src="https://github.com/user-attachments/assets/3dec5caa-b740-4e3a-b3be-8573e25a76c6" />
 
-Key findings: 
+**Key findings: **
 Boomers are the highest-value customer segment, generating $15.45M in spending from 7,433 orders, followed by Gen X and Millennials with around $13.3M each. Gen Z has the lowest spending at $4.51M, but also has the lowest days since last purchase (600 days), suggesting an opportunity to increase engagement and spending within this segment. The Unknown group contributes a significant $9.14M, highlighting the potential value of improving customer demographic data. Overall, purchasing recency is relatively similar across generations, while spending and order volume show much larger differences.
 
 Buckets customers into generational cohorts by birth year and ranks cohorts
