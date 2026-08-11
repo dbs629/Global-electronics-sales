@@ -93,19 +93,27 @@ Revenue shows a repeating Q4-peak, Q1-trough pattern — it builds toward a high
 
 
 
-**Average order value by channel**
+**Revenue contribution by channel year over year**
 
 ```sql
-SELECT
-    YEAR(Order_Date) AS Year,
-    Channel,
-    SUM(c.Quantity * p.Unit_Price_USD) / COUNT(DISTINCT Order_Number) AS AOV
+WITH Channel AS (
+SELECT ProductKey, Quantity, Order_Number, Order_Date,
+CASE WHEN StoreKey = 0 THEN 'Online' ELSE 'Offline' END AS Channel
+FROM GBE_Sales    
+)
+
+SELECT YEAR(Order_Date) AS Year, Channel,
+SUM(c.Quantity*p.Unit_Price_USD) AS Revenue
 FROM Channel c
-JOIN Products p
-    ON c.ProductKey = p.ProductKey
+JOIN GBE_Products p 
+ON c.ProductKey = p.ProductKey
 GROUP BY YEAR(Order_Date), Channel
-ORDER BY Year ASC;
+ORDER BY Year ASC
 ```
+<img width="1090" height="618" alt="image" src="https://github.com/user-attachments/assets/548a8dbe-f56d-47a0-9c19-4180836353bd" />
+
+
+
 
 > Assumes a `Channel` table/view (e.g. Online vs. In-Store) that isn't part
 > of the base 5 CSVs — worth a line here on how you built it (e.g. derived
@@ -142,6 +150,7 @@ JOIN gen g
 GROUP BY Generation
 ORDER BY Total_spending DESC;
 ```
+
 
 Buckets customers into generational cohorts by birth year and ranks cohorts
 by total spend. Customers born before 1946 fall into `Unknown` under this
