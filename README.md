@@ -3,13 +3,13 @@
 ##Data overview
 
 The Objective: Analyze historical transaction data to identify trends, optimize channel performance, and pinpoint customer retention risks.
-<img width="1793" height="66" alt="image" src="https://github.com/user-attachments/assets/66f9cb9f-c4d5-4743-95d9-d6524b401822" />
+
 
 The Dataset: Maven Analytics Global Electronics database spanning five core tables: Customers, Stores, Sales, Products, and Exchange Rates.
-<img width="1816" height="66" alt="image" src="https://github.com/user-attachments/assets/ad40ad6b-3475-4eb3-866a-0986a51ce462" />
+
 
 The Scope: Analysis of 62,885 total records, evaluating sales volume, channel attribution, and cohort-based demographic behaviors.
-<img width="1704" height="66" alt="image" src="https://github.com/user-attachments/assets/6c24c796-4b2b-46b2-b19b-d08970e29daf" />
+
 
 
 
@@ -137,32 +137,67 @@ ORDER BY Year ASC
 
 ```sql
 WITH gen AS (
-    SELECT
-        CustomerKey,
-        CASE
-            WHEN YEAR([Birthday]) BETWEEN 1997 AND 2012 THEN 'Gen Z'
-            WHEN YEAR([Birthday]) BETWEEN 1981 AND 1996 THEN 'Millennials'
-            WHEN YEAR([Birthday]) BETWEEN 1965 AND 1980 THEN 'Gen X'
-            WHEN YEAR([Birthday]) BETWEEN 1946 AND 1964 THEN 'Boomers'
-            WHEN YEAR([Birthday]) >= 2013 THEN 'Gen Alpha'
+    SELECT 
+        CustomerKey, 
+        CASE 
+            WHEN YEAR(Birthday) BETWEEN 1997 AND 2012 THEN 'Gen Z'
+            WHEN YEAR(Birthday) BETWEEN 1981 AND 1996 THEN 'Millennials'
+            WHEN YEAR(Birthday) BETWEEN 1965 AND 1980 THEN 'Gen X'
+            WHEN YEAR(Birthday) BETWEEN 1946 AND 1964 THEN 'Boomers'
+            WHEN YEAR(Birthday) >= 2013 THEN 'Gen Alpha'
             ELSE 'Unknown'
         END AS Generation
-    FROM Customers
+    FROM GBE_Customers
+),
+
+customer_metrics AS (
+    SELECT
+        s.CustomerKey,
+        COUNT(DISTINCT s.Order_Number) AS Orders,
+        SUM(s.Quantity * p.Unit_Price_USD) AS Total_spending
+    FROM GBE_Sales s
+    JOIN GBE_Products p
+        ON s.ProductKey = p.ProductKey
+    GROUP BY s.CustomerKey
+),
+
+day_diff AS (
+    SELECT
+        c.CustomerKey,
+        DATEDIFF(
+            DAY,
+            MAX(s.Order_Date),
+            (SELECT MAX(Order_Date) FROM GBE_Sales)
+        ) AS RFM_Recency
+    FROM GBE_Customers c
+    LEFT JOIN GBE_Sales s
+        ON c.CustomerKey = s.CustomerKey
+    GROUP BY c.CustomerKey
 )
-SELECT
-    Generation,
-    SUM(s.Quantity * p.Unit_Price_USD) AS Total_spending,
-    COUNT(DISTINCT Order_Number) AS Orders,
-    SUM(s.Quantity * p.Unit_Price_USD) / COUNT(Order_Number) AS AOV
-FROM Sales s
-JOIN Products p
-    ON s.ProductKey = p.ProductKey
-JOIN gen g
-    ON s.CustomerKey = g.CustomerKey
-GROUP BY Generation
+
+SELECT 
+    g.Generation,
+    SUM(cm.Total_spending) AS Total_spending,
+    SUM(cm.Orders) AS Orders,
+    AVG(dd.RFM_Recency) AS days_since_last_purchase
+FROM gen g
+JOIN customer_metrics cm
+    ON g.CustomerKey = cm.CustomerKey
+JOIN day_diff dd
+    ON g.CustomerKey = dd.CustomerKey
+GROUP BY g.Generation
 ORDER BY Total_spending DESC;
 ```
+Generation	Total_spending	Orders	Days since last purchase
+Boomers	15453509.46	7433	617
+Gen X	13347735.17	6333	612
+Millennials	13309646.2	6241	608
+Unknown	9135944.54	4182	625
+Gen Z	4508644.22	2137	600
+<img width="611" height="145" alt="image" src="https://github.com/user-attachments/assets/3dec5caa-b740-4e3a-b3be-8573e25a76c6" />
 
+Key findings: 
+Boomers are the highest-value customer segment, generating $15.45M in spending from 7,433 orders, followed by Gen X and Millennials with around $13.3M each. Gen Z has the lowest spending at $4.51M, but also has the lowest days since last purchase (600 days), suggesting an opportunity to increase engagement and spending within this segment. The Unknown group contributes a significant $9.14M, highlighting the potential value of improving customer demographic data. Overall, purchasing recency is relatively similar across generations, while spending and order volume show much larger differences.
 
 Buckets customers into generational cohorts by birth year and ranks cohorts
 by total spend. Customers born before 1946 fall into `Unknown` under this
