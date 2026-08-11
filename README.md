@@ -1,7 +1,19 @@
 # Global Electronics Retailer 
 
+##Data overview
 
-— Data Cleaning
+The Objective: Analyze historical transaction data to identify trends, optimize channel performance, and pinpoint customer retention risks.
+<img width="1793" height="66" alt="image" src="https://github.com/user-attachments/assets/66f9cb9f-c4d5-4743-95d9-d6524b401822" />
+
+The Dataset: Maven Analytics Global Electronics database spanning five core tables: Customers, Stores, Sales, Products, and Exchange Rates.
+<img width="1816" height="66" alt="image" src="https://github.com/user-attachments/assets/ad40ad6b-3475-4eb3-866a-0986a51ce462" />
+
+The Scope: Analysis of 62,885 total records, evaluating sales volume, channel attribution, and cohort-based demographic behaviors.
+<img width="1704" height="66" alt="image" src="https://github.com/user-attachments/assets/6c24c796-4b2b-46b2-b19b-d08970e29daf" />
+
+
+
+## Data Cleaning
 
 Cleans the 5-table Global Electronics Retailer dataset (`Customers`,
 `Exchange_Rates`, `Products`, `Sales`, `Stores`) and produces a data quality
