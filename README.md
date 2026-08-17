@@ -237,6 +237,15 @@ SELECT
 FROM CohortCounts
 ORDER BY CohortYear, YearsSinceStart;
 
+Year	0	1	2	3	4	5
+2016	100	20.73	32.76	45.65	27.76	3.75
+2017	100	34.6	46.51	27.06	4.12	
+2018	100	44.81	27.29	3.64		
+2019	100	25.42	2.86			
+2020	100	3.59				
+2021	100					
+<img width="554" height="169" alt="image" src="https://github.com/user-attachments/assets/e71347aa-7bf1-46be-acef-ec9ca996d4db" />
+
 
 
 Buckets customers into generational cohorts by birth year and ranks cohorts
