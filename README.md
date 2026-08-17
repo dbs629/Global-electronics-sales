@@ -221,8 +221,6 @@ CohortCounts AS (
         CohortYear,
         YearsSinceStart,
         COUNT(DISTINCT CustomerKey) AS ActiveCustomers
-    -- Tạo thêm cột CohortSize (Số khách hàng ở năm 0) bằng Window Function
-    -- Hàm này sẽ tìm số lượng ActiveCustomers tại dòng có YearsSinceStart = 0 của cùng một CohortYear
         ,MAX(CASE WHEN YearsSinceStart = 0 THEN COUNT(DISTINCT CustomerKey) END) 
          OVER(PARTITION BY CohortYear) AS CohortSize
     FROM OrderGaps
