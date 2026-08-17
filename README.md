@@ -191,7 +191,7 @@ ORDER BY Total_spending DESC;
 
 <img width="611" height="145" alt="image" src="https://github.com/user-attachments/assets/3dec5caa-b740-4e3a-b3be-8573e25a76c6" />
 
-**Key findings: **
+**Key findings**:
 Boomers are the highest-value customer segment, generating $15.45M in spending from 7,433 orders, followed by Gen X and Millennials with around $13.3M each. Gen Z has the lowest spending at $4.51M, but also has the lowest days since last purchase (600 days), suggesting an opportunity to increase engagement and spending within this segment. The Unknown group contributes a significant $9.14M, highlighting the potential value of improving customer demographic data. Overall, purchasing recency is relatively similar across generations, while spending and order volume show much larger differences.
 
 **Cohort analysis**
@@ -238,26 +238,14 @@ SELECT
 FROM CohortCounts
 ORDER BY CohortYear, YearsSinceStart;
 ```
-
-Year	0	1	2	3	4	5
-2016	100	20.73	32.76	45.65	27.76	3.75
-2017	100	34.6	46.51	27.06	4.12	
-2018	100	44.81	27.29	3.64		
-2019	100	25.42	2.86			
-2020	100	3.59				
-2021	100					
+			
 <img width="554" height="169" alt="image" src="https://github.com/user-attachments/assets/e71347aa-7bf1-46be-acef-ec9ca996d4db" />
 
+**Key findings**: The last value in every row (3–4%) is a measurement artifact, not real churn — it's the same incomplete 2021 diagonal cutting across every cohort, since data was pulled mid-year before that period finished. Excluding that, retention actually dips at Year 1 then recovers by Year 2–3, more consistent with intermittent repurchasing than steady subscription churn. Cohort quality improved sharply from 2016 to 2018 (Year 1 retention: 20.7% → 34.6% → 44.8%), then reversed with 2019 dropping back to 25.4% — worth investigating. 2017 is the strongest cohort overall, peaking at 46.5% in Year 2, with 2016 close behind. Years 4–5 have too few data points to call a trend yet.
+
+## Recommendation
 
 
-Buckets customers into generational cohorts by birth year and ranks cohorts
-by total spend. Customers born before 1946 fall into `Unknown` under this
-cutoff scheme.
-
-> Heads up: this `AOV` divides by `COUNT(Order_Number)` (every line item),
-> while `Orders` right above it uses `COUNT(DISTINCT Order_Number)`. If you
-> want AOV to mean "average per order" — consistent with the channel query
-> above — switch the AOV denominator to `COUNT(DISTINCT Order_Number)` too.
 
 ## License
 
