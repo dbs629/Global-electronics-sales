@@ -147,7 +147,7 @@ WITH gen AS (
             WHEN YEAR(Birthday) >= 2013 THEN 'Gen Alpha'
             ELSE 'Unknown'
         END AS Generation
-    FROM GBE_Customers
+    FROM Customers
 ),
 
 customer_metrics AS (
@@ -155,8 +155,8 @@ customer_metrics AS (
         s.CustomerKey,
         COUNT(DISTINCT s.Order_Number) AS Orders,
         SUM(s.Quantity * p.Unit_Price_USD) AS Total_spending
-    FROM GBE_Sales s
-    JOIN GBE_Products p
+    FROM Sales s
+    JOIN Products p
         ON s.ProductKey = p.ProductKey
     GROUP BY s.CustomerKey
 ),
@@ -169,8 +169,8 @@ day_diff AS (
             MAX(s.Order_Date),
             (SELECT MAX(Order_Date) FROM GBE_Sales)
         ) AS RFM_Recency
-    FROM GBE_Customers c
-    LEFT JOIN GBE_Sales s
+    FROM Customers c
+    LEFT JOIN Sales s
         ON c.CustomerKey = s.CustomerKey
     GROUP BY c.CustomerKey
 )
@@ -193,6 +193,51 @@ ORDER BY Total_spending DESC;
 
 **Key findings: **
 Boomers are the highest-value customer segment, generating $15.45M in spending from 7,433 orders, followed by Gen X and Millennials with around $13.3M each. Gen Z has the lowest spending at $4.51M, but also has the lowest days since last purchase (600 days), suggesting an opportunity to increase engagement and spending within this segment. The Unknown group contributes a significant $9.14M, highlighting the potential value of improving customer demographic data. Overall, purchasing recency is relatively similar across generations, while spending and order volume show much larger differences.
+
+**Cohort analysis**
+
+WITH 
+CustomerCohort AS (
+    SELECT 
+        CustomerKey,
+        YEAR(MIN([Order_Date])) AS CohortYear
+    FROM Sales
+    GROUP BY CustomerKey
+),
+
+OrderGaps AS (
+    SELECT DISTINCT
+        s.CustomerKey,
+        c.CohortYear,
+        YEAR(s.[Order_Date]) AS OrderYear,
+        (YEAR(s.[Order_Date]) - c.CohortYear) AS YearsSinceStart
+    FROM Sales s
+    JOIN CustomerCohort c ON s.CustomerKey = c.CustomerKey
+),
+
+CohortCounts AS (
+    SELECT 
+        CohortYear,
+        YearsSinceStart,
+        COUNT(DISTINCT CustomerKey) AS ActiveCustomers
+    -- Tạo thêm cột CohortSize (Số khách hàng ở năm 0) bằng Window Function
+    -- Hàm này sẽ tìm số lượng ActiveCustomers tại dòng có YearsSinceStart = 0 của cùng một CohortYear
+        ,MAX(CASE WHEN YearsSinceStart = 0 THEN COUNT(DISTINCT CustomerKey) END) 
+         OVER(PARTITION BY CohortYear) AS CohortSize
+    FROM OrderGaps
+    GROUP BY CohortYear, YearsSinceStart
+)
+
+SELECT 
+    CohortYear,
+    YearsSinceStart,
+    ActiveCustomers,
+    CohortSize,
+    ROUND((ActiveCustomers * 100.0 / CohortSize), 2) AS [RetentionRate_%]
+FROM CohortCounts
+ORDER BY CohortYear, YearsSinceStart;
+
+
 
 Buckets customers into generational cohorts by birth year and ranks cohorts
 by total spend. Customers born before 1946 fall into `Unknown` under this
