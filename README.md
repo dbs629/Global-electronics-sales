@@ -100,7 +100,7 @@ seasonality (e.g. holiday-quarter spikes).
 
 ![Revenue YoY](RevenueYoY.png)
 
-Key findings:
+**Key findings**:
 Revenue shows a repeating Q4-peak, Q1-trough pattern — it builds toward a high around each year-end (likely holiday shopping) before dropping sharply in the following January/February, and this cycle repeats across 2016–2020. That said, some of those early-year drops fall to literal $0, which looks more like a data gap than a true seasonal low, so the peak-to-trough shape is probably real but the depth is exaggerated in places.
 
 
@@ -245,8 +245,15 @@ ORDER BY CohortYear, YearsSinceStart;
 
 ## Recommendation
 
+**Seasonal Revenue Trends**
+Total revenue and order volume consistently peak in November and January each year, pointing to strong seasonal demand around the holiday and New Year shopping periods. We recommend concentrating promotional campaigns, inventory planning, and marketing spend around these two windows to capture peak-season demand more effectively.
 
+**Customer Value by Generation**
+Boomers, Gen X, and Millennials are our most valuable customer segments, driving the highest total spending and order volume across all groups. We recommend developing generation-specific campaigns tailored to each segment's preferences to strengthen loyalty and further grow revenue from these high-value cohorts.
+
+**Cohort Retention**
+Retention performance varies notably by acquisition year, with the 2017 cohort standing out as the strongest, maintaining relatively high retention well into its second and third years. Retention data for 2020 and 2021 is still too limited to draw conclusions, so we recommend continuing to track these cohorts as more purchase history accumulates.
 
 ## License
 
-MIT (or your choice — update this section).
+MIT.
