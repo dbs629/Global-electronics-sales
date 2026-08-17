@@ -196,6 +196,7 @@ Boomers are the highest-value customer segment, generating $15.45M in spending f
 
 **Cohort analysis**
 
+```sql
 WITH 
 CustomerCohort AS (
     SELECT 
@@ -236,6 +237,7 @@ SELECT
     ROUND((ActiveCustomers * 100.0 / CohortSize), 2) AS [RetentionRate_%]
 FROM CohortCounts
 ORDER BY CohortYear, YearsSinceStart;
+```
 
 Year	0	1	2	3	4	5
 2016	100	20.73	32.76	45.65	27.76	3.75
