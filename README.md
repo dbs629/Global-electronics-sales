@@ -11,7 +11,7 @@ The Dataset: Maven Analytics Global Electronics database spanning five core tabl
 The Scope: Analysis of 62,885 total records, evaluating sales volume, channel attribution, and cohort-based demographic behaviors.
 
 
-
+##Tools: SQL, Excel, PowerBI
 
 ## Data Cleaning
 
