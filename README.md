@@ -127,9 +127,7 @@ ORDER BY Year ASC
 
 
 
-> Assumes a `Channel` table/view (e.g. Online vs. In-Store) that isn't part
-> of the base 5 CSVs — worth a line here on how you built it (e.g. derived
-> from `Stores.StoreKey = 0` = Online) if you're sharing this repo.
+The data indicates a gradual shift toward online channels, with the e-commerce share rising from 16.8% in 2016 to 27.5% in 2021, highlighting its growing importance and future growth potential.
 
 ### Customer analysis & segmentation
 
