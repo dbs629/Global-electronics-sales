@@ -126,8 +126,7 @@ ORDER BY Year ASC
 
 
 
-
-The data indicates a gradual shift toward online channels, with the e-commerce share rising from 16.8% in 2016 to 27.5% in 2021, highlighting its growing importance and future growth potential.
+Key findings: The data indicates a gradual shift toward online channels, with the e-commerce share rising from 16.8% in 2016 to 27.5% in 2021, highlighting its growing importance and future growth potential.
 
 ### Customer analysis & segmentation
 
